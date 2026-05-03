@@ -30,6 +30,28 @@
 			z-index: 0;
 		}
 
+		/* Black gradient mask at the bottom of the viewport.
+		   Hides the edge of the finite grass field on tall mobile portraits
+		   (iPhone Safari computes 100vh differently than the rendered canvas
+		   when the URL bar shows/hides, exposing the field's hard edge). */
+		.scene-mask {
+			position: fixed;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			height: 35vh;
+			z-index: 1;
+			pointer-events: none;
+			background: linear-gradient(to bottom,
+				rgba(0,0,0,0) 0%,
+				rgba(0,0,0,0.35) 35%,
+				rgba(0,0,0,0.85) 75%,
+				rgba(0,0,0,1) 100%);
+		}
+		@media (min-width: 768px) {
+			.scene-mask { display: none; }
+		}
+
 		#scroll-container {
 			position: relative;
 			z-index: 2;
@@ -1330,6 +1352,7 @@
 </head>
 
 <body>
+	<div class="scene-mask"></div>
 	<div class="progress-bar" id="progressBar"></div>
 
 	<nav class="nav-float" id="navFloat">
@@ -1493,6 +1516,25 @@
 			</div>
 		</div>
 	</footer>
+
+	<!-- Slow-load safety net: if Three.js (WebGPU) takes >1.4s to set up the
+	     reveal observer (or fails entirely), reveal hero content so the user
+	     never stares at black. Fast loads trigger the in-script observer first
+	     and this never fires visibly. -->
+	<script>
+		setTimeout(() => {
+			document.querySelectorAll('[data-reveal]:not(.revealed)').forEach(el => {
+				const delay = el.dataset.delay || '0';
+				el.classList.add('revealed', 'delay-' + delay);
+			});
+		}, 1400);
+		window.addEventListener('error', () => {
+			document.querySelectorAll('[data-reveal]:not(.revealed)').forEach(el => {
+				const delay = el.dataset.delay || '0';
+				el.classList.add('revealed', 'delay-' + delay);
+			});
+		});
+	</script>
 
 	<script type="module">
 		import * as THREE from 'three/webgpu';
