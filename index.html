@@ -58,6 +58,15 @@
 			padding-top: 6vh;
 		}
 
+		@media (max-width: 768px) {
+			.hero {
+				padding-top: 4vh;
+				padding-left: 20px;
+				padding-right: 20px;
+				gap: 16px;
+			}
+		}
+
 		.hero-tag {
 			font-size: 11px;
 			letter-spacing: 4px;
@@ -81,6 +90,13 @@
 			text-shadow: 0 2px 30px rgba(0,0,0,0.6), 0 0px 80px rgba(98, 0, 238, 0.25);
 		}
 
+		@media (max-width: 768px) {
+			.hero h1 {
+				font-size: 64px;
+				letter-spacing: -0.5px;
+			}
+		}
+
 		.hero h1 em {
 			font-style: italic;
 			color: #FFFFFF;
@@ -92,16 +108,24 @@
 
 		.hero-role {
 			font-family: 'Inter', sans-serif;
-			font-size: clamp(15px, 1.65vw, 19px);
+			font-size: clamp(13px, 1.65vw, 19px);
 			line-height: 1.55;
 			max-width: 720px;
 			opacity: 0;
 			transform: translateY(30px);
 			color: rgba(245, 232, 255, 0.95);
 			font-weight: 400;
-			text-shadow: 0 1px 12px rgba(0, 0, 0, 0.65), 0 0 28px rgba(0, 0, 0, 0.4);
+			text-shadow: 0 1px 14px rgba(0, 0, 0, 0.85), 0 0 30px rgba(0, 0, 0, 0.6), 0 0 50px rgba(0, 0, 0, 0.4);
 			text-wrap: balance;
 			margin-top: 6px;
+		}
+
+		@media (max-width: 768px) {
+			.hero-role {
+				font-size: 14px;
+				line-height: 1.5;
+				max-width: 320px;
+			}
 		}
 
 		.hero-sub {
@@ -1250,6 +1274,14 @@
 			margin-top: 6px;
 		}
 
+		@media (max-width: 768px) {
+			.hero-tag {
+				font-size: 9px !important;
+				letter-spacing: 3px !important;
+				padding: 7px 14px !important;
+			}
+		}
+
 		/* Rotating role inside the hero pill */
 		.hero-tag-rotator {
 			display: inline-grid;
@@ -1512,7 +1544,8 @@
 		scene.background = buildSkyTexture();
 		scene.fog = new THREE.FogExp2('#000000', 0.035);
 
-		const camera = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, 0.1, 100);
+		// Wider FOV on mobile (portrait) so grass appears smaller and content has more room
+		const camera = new THREE.PerspectiveCamera(window.innerWidth < 768 ? 55 : 38, innerWidth / innerHeight, 0.1, 100);
 		camera.position.set(0, 8, 18);
 		camera.lookAt(0, 0, 0);
 
@@ -1811,6 +1844,7 @@
 			clearTimeout(resizeTimeout);
 			resizeTimeout = setTimeout(() => {
 				camera.aspect = innerWidth / innerHeight;
+				camera.fov = window.innerWidth < 768 ? 55 : 38;
 				camera.updateProjectionMatrix();
 				const dpr = window.innerWidth < 1200 ? 1.5 : Math.min(devicePixelRatio, 2);
 				renderer.setPixelRatio(dpr);
