@@ -1575,9 +1575,11 @@
 		const vpW = window.visualViewport ? window.visualViewport.width : innerWidth;
 		const vpH = window.visualViewport ? window.visualViewport.height : innerHeight;
 
-		// Same FOV on mobile and desktop (38°) to keep the grass field edge hidden
-		// outside the viewport. Wider FOVs reveal the hard edge of the finite field.
-		const camera = new THREE.PerspectiveCamera(38, vpW / vpH, 0.1, 100);
+		// Wider FOV on mobile (55°) so the grass dominates the tall portrait viewport,
+		// and the camera looks DOWN to keep the horizon high & grass filling the bottom.
+		// Camera sits inside the field so the field edge is never visible.
+		const _initFOV = vpW < 768 ? 55 : 38;
+		const camera = new THREE.PerspectiveCamera(_initFOV, vpW / vpH, 0.1, 100);
 		camera.position.set(0, 8, 18);
 		camera.lookAt(0, 0, 0);
 
@@ -1880,7 +1882,7 @@
 				const w = window.visualViewport ? window.visualViewport.width : innerWidth;
 				const h = window.visualViewport ? window.visualViewport.height : innerHeight;
 				camera.aspect = w / h;
-				camera.fov = 38;
+				camera.fov = w < 768 ? 55 : 38;
 				camera.updateProjectionMatrix();
 				const dpr = w < 1200 ? 1.5 : Math.min(devicePixelRatio, 2);
 				renderer.setPixelRatio(dpr);
@@ -2621,10 +2623,12 @@
 			[1.00,  0,   15.0,  0.0, -5,   3.0,  -5,    9.8, 1, 1, 13.8,  0.0, 17.5, 1.2,  9.0],  // Footer
 		];
 
-		// ── Mobile: lower camera + level look so grass fills the bottom of the
-		// portrait viewport and looks bigger. Also closer in (z=12) for scale.
+		// ── Mobile: camera elevated and angled DOWN ~11° so the horizon sits
+		// high in the viewport and grass fills ~70% of the screen. Combined with
+		// FOV 55° this makes the field dominate even on tall portrait viewports.
+		// Camera at z=12 (still inside the field) so we never see past the edge.
 		if (isMobile) {
-			cameraPath[0] = [0.00,  0,  2.2, 12.0,  0,  2.2,  -2.0, 14.0, 1, 0,  6.5, 12.5, 5.0, 1.0, 40.0];
+			cameraPath[0] = [0.00,  0,  4.0, 12.0,  0,  1.7,  0,  14.0, 1, 0,  6.5, 12.5, 5.0, 1.0, 40.0];
 		}
 
 		// Per-stage params (each stage gets its own copy, starts as defaults)
