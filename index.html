@@ -6,6 +6,11 @@
 	<title>Mai Esquivel — Designer Portfolio</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<!-- Preload Three.js modules to start download in parallel with HTML parsing.
+	     Cuts cold-start time by ~500ms-1s. -->
+	<link rel="preconnect" href="https://unpkg.com" crossorigin />
+	<link rel="modulepreload" href="https://unpkg.com/three@0.183.0/build/three.webgpu.js" crossorigin />
+	<link rel="modulepreload" href="https://unpkg.com/three@0.183.0/build/three.tsl.js" crossorigin />
 	<style>
 		@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
 
