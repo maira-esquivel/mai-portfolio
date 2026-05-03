@@ -6,6 +6,10 @@
 	<title>Mai Esquivel — Designer Portfolio</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link rel="preconnect" href="https://unpkg.com" crossorigin />
+	<link rel="preload" href="portfolio-img/grass-fallback.svg" as="image" type="image/svg+xml" />
+	<link rel="modulepreload" href="https://unpkg.com/three@0.183.0/build/three.webgpu.js" crossorigin />
+	<link rel="modulepreload" href="https://unpkg.com/three@0.183.0/build/three.tsl.js" crossorigin />
 	<style>
 		@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
 
@@ -30,7 +34,27 @@
 			height: 100vh; /* fallback */
 			height: 100dvh; /* dynamic viewport — accounts for iOS Safari URL/nav bars */
 			z-index: 0;
+			opacity: 0;
+			transition: opacity 0.7s ease-out;
 		}
+		body.scene-ready canvas { opacity: 1; }
+
+		/* Static SVG grass shown immediately while Three.js loads.
+		   Sits behind the canvas; canvas fades in on top once first frame renders. */
+		.bg-fallback {
+			position: fixed;
+			left: 0; right: 0; bottom: 0;
+			height: 60vh;
+			height: 60dvh;
+			z-index: 0;
+			pointer-events: none;
+			background-image: url('portfolio-img/grass-fallback.svg');
+			background-size: cover;
+			background-position: bottom center;
+			background-repeat: no-repeat;
+			transition: opacity 0.9s ease-out 0.3s;
+		}
+		body.scene-ready .bg-fallback { opacity: 0; }
 
 
 		#scroll-container {
@@ -1337,6 +1361,7 @@
 </head>
 
 <body>
+	<div class="bg-fallback" aria-hidden="true"></div>
 	<div class="progress-bar" id="progressBar"></div>
 
 	<nav class="nav-float" id="navFloat">
@@ -2889,6 +2914,7 @@
 		// Cache DOM elements queried every frame
 		const _siteFooter = document.querySelector('.site-footer');
 		const _scrollHint = document.querySelector('.scroll-hint');
+		let _firstFrameDone = false;
 
 		function animate() {
 			const dt = Math.min(clock.getDelta(), 0.05);
@@ -3070,6 +3096,12 @@
 
 			renderer.compute(computeUpdate);
 			postProcessing.render();
+
+			// First-frame signal: fade out the static SVG fallback and reveal canvas
+			if (!_firstFrameDone) {
+				_firstFrameDone = true;
+				requestAnimationFrame(() => document.body.classList.add('scene-ready'));
+			}
 		}
 
 		renderer.setAnimationLoop(animate);
