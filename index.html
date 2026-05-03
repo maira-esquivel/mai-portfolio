@@ -26,7 +26,9 @@
 		canvas {
 			position: fixed;
 			top: 0; left: 0;
-			width: 100vw; height: 100vh;
+			width: 100vw;
+			height: 100vh; /* fallback */
+			height: 100dvh; /* dynamic viewport — accounts for iOS Safari URL/nav bars */
 			z-index: 0;
 		}
 
@@ -40,7 +42,8 @@
 
 		.section {
 			position: relative;
-			min-height: 100vh;
+			min-height: 100vh; /* fallback */
+			min-height: 100dvh; /* mobile-aware viewport */
 			display: flex;
 			align-items: center;
 			justify-content: center;
@@ -695,7 +698,8 @@
 			text-align: center;
 			align-items: center;
 			justify-content: center;
-			min-height: 100vh;
+			min-height: 100vh; /* fallback */
+			min-height: 100dvh;
 			padding: 0 40px;
 			margin-bottom: 0;
 		}
@@ -1566,17 +1570,22 @@
 		scene.background = buildSkyTexture();
 		scene.fog = new THREE.FogExp2('#000000', 0.035);
 
+		// Use visualViewport on mobile Safari for accurate sizing that excludes
+		// the URL/nav bar overlay area (otherwise the canvas extends behind chrome).
+		const vpW = window.visualViewport ? window.visualViewport.width : innerWidth;
+		const vpH = window.visualViewport ? window.visualViewport.height : innerHeight;
+
 		// Same FOV on mobile and desktop (38°) to keep the grass field edge hidden
 		// outside the viewport. Wider FOVs reveal the hard edge of the finite field.
-		const camera = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, 0.1, 100);
+		const camera = new THREE.PerspectiveCamera(38, vpW / vpH, 0.1, 100);
 		camera.position.set(0, 8, 18);
 		camera.lookAt(0, 0, 0);
 
 		const renderer = new THREE.WebGPURenderer({ antialias: true });
 		const isMobile = window.innerWidth < 768;
-		const maxDPR = window.innerWidth < 1200 ? 1.5 : Math.min(devicePixelRatio, 2);
+		const maxDPR = vpW < 1200 ? 1.5 : Math.min(devicePixelRatio, 2);
 		renderer.setPixelRatio(maxDPR);
-		renderer.setSize(innerWidth, innerHeight);
+		renderer.setSize(vpW, vpH);
 		renderer.toneMapping = THREE.ACESFilmicToneMapping;
 		renderer.toneMappingExposure = 1.0;
 		document.body.appendChild(renderer.domElement);
@@ -1863,17 +1872,25 @@
 		window.addEventListener('mouseleave', () => mouseWorld.value.set(99999, 0, 99999));
 
 		let resizeTimeout;
-		window.addEventListener('resize', () => {
+		function handleViewportResize() {
 			clearTimeout(resizeTimeout);
 			resizeTimeout = setTimeout(() => {
-				camera.aspect = innerWidth / innerHeight;
+				// Use visualViewport when available (iOS Safari) for accurate
+				// dimensions that account for the URL/nav bar showing/hiding.
+				const w = window.visualViewport ? window.visualViewport.width : innerWidth;
+				const h = window.visualViewport ? window.visualViewport.height : innerHeight;
+				camera.aspect = w / h;
 				camera.fov = 38;
 				camera.updateProjectionMatrix();
-				const dpr = window.innerWidth < 1200 ? 1.5 : Math.min(devicePixelRatio, 2);
+				const dpr = w < 1200 ? 1.5 : Math.min(devicePixelRatio, 2);
 				renderer.setPixelRatio(dpr);
-				renderer.setSize(innerWidth, innerHeight);
+				renderer.setSize(w, h);
 			}, 100);
-		});
+		}
+		window.addEventListener('resize', handleViewportResize);
+		if (window.visualViewport) {
+			window.visualViewport.addEventListener('resize', handleViewportResize);
+		}
 
 		// (Dev settings panel removed for production — function kept defined but never called.)
 		function buildSettings() {
