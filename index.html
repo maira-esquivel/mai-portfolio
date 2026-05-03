@@ -30,27 +30,6 @@
 			z-index: 0;
 		}
 
-		/* Black gradient mask at the bottom of the viewport.
-		   Hides the edge of the finite grass field on tall mobile portraits
-		   (iPhone Safari computes 100vh differently than the rendered canvas
-		   when the URL bar shows/hides, exposing the field's hard edge). */
-		.scene-mask {
-			position: fixed;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			height: 35vh;
-			z-index: 1;
-			pointer-events: none;
-			background: linear-gradient(to bottom,
-				rgba(0,0,0,0) 0%,
-				rgba(0,0,0,0.35) 35%,
-				rgba(0,0,0,0.85) 75%,
-				rgba(0,0,0,1) 100%);
-		}
-		@media (min-width: 768px) {
-			.scene-mask { display: none; }
-		}
 
 		#scroll-container {
 			position: relative;
@@ -1238,6 +1217,8 @@
 			.nav-links { display: none; }
 			.nav-hamburger { display: block; }
 			.nav-float { padding: 0 24px; }
+			/* Move EXPLORE PROJECTS hint higher on mobile (was 12vh) */
+			.scroll-hint { margin-bottom: 28vh; }
 		}
 
 		.progress-bar {
@@ -1352,7 +1333,6 @@
 </head>
 
 <body>
-	<div class="scene-mask"></div>
 	<div class="progress-bar" id="progressBar"></div>
 
 	<nav class="nav-float" id="navFloat">
@@ -2623,6 +2603,12 @@
 			[0.78, -1.6,  2.4,  0.0, -1.2, -2.0,   0.0, 16.4, 1, 0, 20.0, 18.0, 19.0, 2.8, 12.5],  // CTA
 			[1.00,  0,   15.0,  0.0, -5,   3.0,  -5,    9.8, 1, 1, 13.8,  0.0, 17.5, 1.2,  9.0],  // Footer
 		];
+
+		// ── Mobile: lower camera + level look so grass fills the bottom of the
+		// portrait viewport and looks bigger. Also closer in (z=12) for scale.
+		if (isMobile) {
+			cameraPath[0] = [0.00,  0,  2.2, 12.0,  0,  2.2,  -2.0, 14.0, 1, 0,  6.5, 12.5, 5.0, 1.0, 40.0];
+		}
 
 		// Per-stage params (each stage gets its own copy, starts as defaults)
 		const stageParams = cameraPath.map(() => getDefaultParams());
