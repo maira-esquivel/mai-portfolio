@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+	<title>Irys Design System — Case Study · Mai Esquivel</title>
+	<meta name="description" content="Designing the system that turns citizen reports into real municipal action — a product design case study by Mai Esquivel." />
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+
+		*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+		/* ── Accessibility: keyboard focus states ── */
+		*:focus { outline: none; }
+		*:focus-visible {
+			outline: 2px solid #BB86FC;
+			outline-offset: 3px;
+			border-radius: 4px;
+		}
+		a:focus-visible,
+		button:focus-visible {
+			outline: 2px solid #BB86FC;
+			outline-offset: 3px;
+			box-shadow: 0 0 0 4px rgba(187, 134, 252, 0.18);
+		}
+		.cta-btn:focus-visible,
+		.back-btn:focus-visible,
+		.carousel-arrow:focus-visible,
+		.carousel-dot:focus-visible {
+			outline: 2px solid #BB86FC;
+			outline-offset: 4px;
+			box-shadow: 0 0 0 6px rgba(187, 134, 252, 0.22);
+		}
+		/* Skip-to-content link */
+		.skip-link {
+			position: absolute;
+			left: -9999px;
+			top: 0;
+			background: #1a0040;
+			color: #f5f0ff;
+			padding: 12px 18px;
+			border-radius: 8px;
+			border: 1px solid rgba(187, 134, 252, 0.5);
+			z-index: 1000;
+			font-size: 14px;
+			text-decoration: none;
+		}
+		.skip-link:focus { left: 16px; top: 16px; }
+
+		html, body {
+			width: 100%;
+			min-height: 100%;
+			background: #060010;
+			overflow-x: hidden;
+			font-family: 'Inter', system-ui, sans-serif;
+			color: #e8e4f5;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			text-rendering: optimizeLegibility;
+		}
+
+		/* ── Atmospheric violet background (CSS only) ── */
+		body::before {
+			content: '';
+			position: fixed;
+			inset: 0;
+			z-index: 0;
+			background:
+				radial-gradient(circle at 20% 0%, rgba(98, 0, 238, 0.18) 0%, transparent 45%),
+				radial-gradient(circle at 80% 25%, rgba(187, 134, 252, 0.10) 0%, transparent 50%),
+				radial-gradient(circle at 50% 100%, rgba(55, 0, 179, 0.22) 0%, transparent 55%),
+				#060010;
+			pointer-events: none;
+		}
+
+		body::after {
+			content: '';
+			position: fixed;
+			inset: 0;
+			z-index: 0;
+			background-image:
+				radial-gradient(rgba(187, 134, 252, 0.025) 1px, transparent 1px);
+			background-size: 4px 4px;
+			pointer-events: none;
+			mix-blend-mode: overlay;
+		}
+
+		main, header, footer { position: relative; z-index: 1; }
+
+		a { color: inherit; text-decoration: none; }
+
+		/* ── Floating Nav ── */
+		.nav-float {
+			position: fixed;
+			top: 24px;
+			left: 0;
+			right: 0;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 0 40px;
+			z-index: 50;
+			pointer-events: none;
+		}
+
+		.nav-logo {
+			font-family: 'Playfair Display', serif;
+			font-size: 22px;
+			color: rgba(245, 240, 255, 0.95);
+			letter-spacing: 0.4px;
+			pointer-events: auto;
+			line-height: 1;
+		}
+
+		.nav-logo-accent {
+			color: rgba(187, 134, 252, 1);
+			font-style: italic;
+		}
+
+		.nav-links {
+			display: flex;
+			align-items: center;
+			gap: 28px;
+			pointer-events: auto;
+		}
+
+		.nav-links a {
+			font-size: 11px;
+			letter-spacing: 2px;
+			text-transform: uppercase;
+			color: rgba(238, 226, 255, 0.75);
+			transition: color 0.3s;
+			font-weight: 500;
+		}
+
+		.nav-links a:hover { color: rgba(245, 232, 255, 1); }
+
+		/* Contact button */
+		.nav-links a.nav-contact-btn {
+			padding: 9px 18px;
+			background: rgba(98, 0, 238, 0.45);
+			border: 1px solid rgba(187, 134, 252, 0.7);
+			border-radius: 999px;
+			color: rgba(255, 255, 255, 1) !important;
+			-webkit-backdrop-filter: blur(12px);
+			backdrop-filter: blur(12px);
+			box-shadow: 0 4px 16px rgba(98, 0, 238, 0.35);
+			transition: all 0.3s ease;
+			line-height: 1;
+		}
+		.nav-links a.nav-contact-btn:hover {
+			background: rgba(98, 0, 238, 0.7);
+			border-color: rgba(187, 134, 252, 0.95);
+			transform: translateY(-1px);
+		}
+
+		.nav-back {
+			position: fixed;
+			top: 86px;
+			left: 40px;
+			z-index: 50;
+			font-size: 11px;
+			letter-spacing: 2px;
+			text-transform: uppercase;
+			color: rgba(225, 205, 255, 0.7);
+			padding: 7px 14px;
+			background: rgba(20, 8, 40, 0.65);
+			border: 1px solid rgba(187, 134, 252, 0.28);
+			border-radius: 999px;
+			-webkit-backdrop-filter: blur(12px);
+			backdrop-filter: blur(12px);
+			transition: all 0.3s;
+			display: inline-flex;
+			align-items: center;
+			gap: 7px;
+		}
+
+		.nav-back:hover {
+			color: rgba(245, 232, 255, 1);
+			border-color: rgba(187, 134, 252, 0.55);
+			transform: translateX(-3px);
+		}
+
+		.nav-hamburger {
+			display: none;
+			pointer-events: auto;
+			width: 36px;
+			height: 36px;
+			background: rgba(20, 10, 35, 0.4);
+			backdrop-filter: blur(12px);
+			border: 1px solid rgba(120, 90, 200, 0.15);
+			border-radius: 8px;
+			cursor: pointer;
+			position: relative;
+			flex-shrink: 0;
+		}
+		.nav-hamburger span {
+			position: absolute;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 16px;
+			height: 1.5px;
+			background: rgba(245, 235, 255, 0.7);
+			border-radius: 1px;
+		}
+		.nav-hamburger span:nth-child(1) { top: 12px; }
+		.nav-hamburger span:nth-child(2) { top: 17px; }
+		.nav-hamburger span:nth-child(3) { top: 22px; }
+
+		@media (max-width: 768px) {
+			.nav-links { display: none; }
+			.nav-hamburger { display: block; }
+			.nav-float { padding: 0 24px; }
+			.nav-back { left: 24px; top: 80px; }
+		}
+
+		/* ── Layout ── */
+		.case-wrap {
+			max-width: 1100px;
+			margin: 0 auto;
+			padding: 0 40px;
+		}
+
+		@media (max-width: 600px) {
+			.case-wrap { padding: 0 20px; }
+		}
+
+		.section {
+			padding: 120px 0;
+			position: relative;
+		}
+
+		@media (max-width: 768px) {
+			.section { padding: 80px 0; }
+		}
+
+		/* ── Section eyebrow pills ── */
+		.eyebrow {
+			display: inline-block;
+			padding: 8px 18px;
+			background: rgba(20, 8, 40, 0.72);
+			-webkit-backdrop-filter: blur(14px);
+			backdrop-filter: blur(14px);
+			border: 1px solid rgba(187, 134, 252, 0.32);
+			border-radius: 999px;
+			color: rgba(245, 232, 255, 0.96);
+			font-size: 10px;
+			letter-spacing: 4px;
+			text-transform: uppercase;
+			font-weight: 500;
+			line-height: 1;
+			box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+		}
+
+		/* ── Hero ── */
+		.hero {
+			padding-top: 200px;
+			padding-bottom: 80px;
+			text-align: center;
+		}
+
+		.hero-meta {
+			display: flex;
+			justify-content: center;
+			flex-wrap: wrap;
+			gap: 36px 60px;
+			margin: 50px 0 60px;
+			opacity: 0;
+			transform: translateY(20px);
+		}
+
+		.hero-meta-item {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+			text-align: left;
+		}
+
+		.hero-meta-item .label {
+			font-size: 10px;
+			letter-spacing: 3px;
+			text-transform: uppercase;
+			color: rgba(187, 134, 252, 0.75);
+			font-weight: 500;
+		}
+
+		.hero-meta-item .value {
+			font-family: 'Playfair Display', serif;
+			font-size: 17px;
+			color: rgba(245, 240, 255, 0.95);
+			font-weight: 400;
+		}
+
+		.hero h1 {
+			font-family: 'Playfair Display', serif;
+			font-size: clamp(64px, 11vw, 160px);
+			font-weight: 400;
+			line-height: 1;
+			letter-spacing: -2px;
+			color: #BB86FC;
+			margin: 30px 0 24px;
+			opacity: 0;
+			transform: translateY(40px);
+			text-shadow: 0 0 80px rgba(98, 0, 238, 0.35);
+		}
+
+		.hero h1 em {
+			font-style: italic;
+			color: #FFFFFF;
+		}
+
+		.hero-tagline {
+			font-family: 'Playfair Display', serif;
+			font-size: clamp(20px, 2.5vw, 28px);
+			font-weight: 400;
+			font-style: italic;
+			line-height: 1.4;
+			max-width: 720px;
+			margin: 0 auto;
+			color: rgba(245, 232, 255, 0.85);
+			opacity: 0;
+			transform: translateY(30px);
+			text-wrap: balance;
+		}
+
+		.hero-image-wrap {
+			margin: 90px auto 0;
+			max-width: 1100px;
+			height: 400px;
+			opacity: 0;
+			transform: translateY(40px);
+			border-radius: 24px;
+			overflow: hidden;
+			border: 1px solid rgba(170, 130, 235, 0.18);
+			box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(187, 134, 252, 0.08);
+			position: relative;
+		}
+
+		.hero-image-wrap img {
+			width: 100%;
+			height: 130%;
+			object-fit: cover;
+			object-position: center;
+			display: block;
+			position: absolute;
+			top: -15%;
+			left: 0;
+			will-change: transform;
+		}
+
+		@media (max-width: 768px) {
+			.hero-image-wrap { height: 280px; margin-top: 60px; border-radius: 18px; }
+		}
+
+		/* ── Story section (problem) ── */
+		.story h2 {
+			font-family: 'Playfair Display', serif;
+			font-size: clamp(36px, 5.5vw, 64px);
+			font-weight: 400;
+			line-height: 1.1;
+			letter-spacing: -1px;
+			max-width: 880px;
+			margin: 28px 0 0;
+			color: rgba(248, 244, 255, 0.96);
+			opacity: 0;
+			transform: translateY(30px);
+			text-wrap: balance;
+		}
+
+		.story h2 em {
+			font-style: italic;
+			color: #BB86FC;
+		}
+
+		.story-pull {
+			font-family: 'Playfair Display', serif;
+			font-size: clamp(24px, 3.2vw, 38px);
+			font-weight: 400;
+			font-style: italic;
+			line-height: 1.35;
+			max-width: 820px;
+			color: #BB86FC;
+			margin: 50px 0 36px;
+			opacity: 0;
+			transform: translateY(30px);
+			text-wrap: balance;
+		}
+
+		.story-body {
+			font-family: 'Inter', sans-serif;
+			font-size: clamp(15px, 1.45vw, 18px);
+			line-height: 1.7;
+			max-width: 720px;
+			color: rgba(238, 226, 255, 0.78);
+			font-weight: 300;
+			opacity: 0;
+			transform: translateY(30px);
+			margin-top: 32px;
+		}
+
+		.story-body strong {
+			color: rgba(245, 232, 255, 0.96);
+			font-weight: 500;
+		}
+
+		/* ── Marquee NO FEEDBACK · NO TRUST · NO RETURN ── */
+		.marquee {
+			margin: 90px 0 0;
+			overflow: hidden;
+			padding: 22px 0;
+			border-top: 1px solid rgba(170, 130, 235, 0.14);
+			border-bottom: 1px solid rgba(170, 130, 235, 0.14);
+			-webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+			mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+		}
+
+		.marquee-track {
+			display: flex;
+			gap: 60px;
+			width: max-content;
+			animation: marqueeScroll 28s linear infinite;
+		}
+
+		.marquee-item {
+			font-family: 'Playfair Display', serif;
+			font-size: clamp(28px, 4vw, 48px);
+			font-weight: 400;
+			letter-spacing: 4px;
+			text-transform: uppercase;
+			color: rgba(245, 232, 255, 0.85);
+			white-space: nowrap;
+			display: flex;
+			align-items: center;
+			gap: 60px;
+		}
+
+		.marquee-item::after {
+			content: '·';
+			color: rgba(187, 134, 252, 1);
+			font-size: 1.4em;
+			line-height: 0;
+		}
+
+		@keyframes marqueeScroll {
+			0% { transform: translateX(0); }
+			100% { transform: translateX(-50%); }
+		}
+
+		/* ── Solution: 3 principle cards ── */
+		.solution-intro {
+			margin-bottom: 60px;
+		}
+
+		.principle-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 24px;
+		}
+
+		@media (max-width: 900px) {
+			.principle-grid { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; }
+		}
+
+		.principle-card {
+			padding: 36px 30px;
+			border-radius: 20px;
+			background: linear-gradient(160deg, rgba(25, 12, 45, 0.8), rgba(15, 8, 30, 0.55));
+			border: 1px solid rgba(170, 130, 235, 0.18);
+			backdrop-filter: blur(18px);
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
+			opacity: 0;
+			transform: translateY(40px);
+			transition: border-color 0.5s ease, transform 0.5s ease;
+		}
+
+		/* ── Solution carousel ── */
+		.solution-carousel {
+			margin-top: 56px;
+			opacity: 0;
+			transform: translateY(30px);
+		}
+
+		.solution-carousel-track {
+			display: flex;
+			gap: 24px;
+			overflow-x: auto;
+			scroll-snap-type: x mandatory;
+			scroll-behavior: smooth;
+			scrollbar-width: none;
+			padding: 0 0 4px;
+			-webkit-overflow-scrolling: touch;
+		}
+
+		.solution-carousel-track::-webkit-scrollbar { display: none; }
+
+		.solution-slide {
+			flex: 0 0 100%;
+			scroll-snap-align: center;
+			position: relative;
+			height: clamp(320px, 56vh, 560px);
+			border-radius: 22px;
+			overflow: hidden;
+			border: 1px solid rgba(170, 130, 235, 0.2);
+			background: linear-gradient(160deg, rgba(28, 14, 50, 0.9), rgba(15, 8, 30, 0.7));
+			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+		}
+
+		.solution-slide img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			object-position: center;
+			display: block;
+		}
+
+		.solution-slide-pill {
+			position: absolute;
+			top: 22px;
+			left: 22px;
+			z-index: 2;
+			font-family: 'Inter', sans-serif;
+			font-size: 11px;
+			letter-spacing: 3px;
+			text-transform: uppercase;
+			color: rgba(255, 255, 255, 0.96);
+			padding: 9px 16px;
+			background: rgba(15, 8, 30, 0.65);
+			-webkit-backdrop-filter: blur(12px);
+			backdrop-filter: blur(12px);
+			border-radius: 999px;
+			border: 1px solid rgba(187, 134, 252, 0.45);
+			font-weight: 500;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+		}
+
+		.solution-carousel-controls {
+			margin-top: 28px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 18px;
+		}
+
+		.solution-carousel-arrow {
+			width: 42px;
+			height: 42px;
+			border-radius: 50%;
+			background: rgba(20, 8, 40, 0.65);
+			border: 1px solid rgba(187, 134, 252, 0.32);
+			color: rgba(245, 232, 255, 0.95);
+			cursor: pointer;
+			transition: all 0.3s ease;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 18px;
+			font-family: 'Inter', sans-serif;
+			padding: 0;
+			-webkit-backdrop-filter: blur(12px);
+			backdrop-filter: blur(12px);
+		}
+
+		.solution-carousel-arrow:hover:not(:disabled) {
+			background: rgba(98, 0, 238, 0.45);
+			border-color: rgba(187, 134, 252, 0.7);
+		}
+
+		.solution-carousel-arrow:disabled {
+			opacity: 0.3;
+			cursor: not-allowed;
+		}
+
+		.solution-carousel-dots {
+			display: flex;
+			gap: 10px;
+			align-items: center;
+		}
+
+		.solution-carousel-dot {
+			width: 8px;
+			height: 8px;
+			border-radius: 50%;
+			background: rgba(187, 134, 252, 0.25);
+			transition: all 0.4s ease;
+			cursor: pointer;
+			border: none;
+			padding: 0;
+		}
+
+		.solution-carousel-dot.active {
+			background: rgba(187, 134, 252, 0.95);
+			width: 28px;
+			border-radius: 4px;
+		}
+
+		.solution-carousel-dot:hover:not(.active) {
+			background: rgba(187, 134, 252, 0.5);
+		}
+
+		.principle-card:hover {
+			border-color: rgba(187, 134, 252, 0.5);
+			transform: translateY(-4px) !important;
+		}
+
+		.principle-card h3 {
+			font-family: 'Playfair Display', serif;
+			font-size: 28px;
+			font-weight: 500;
+			color: rgba(248, 244, 255, 0.97);
+			letter-spacing: -0.5px;
+		}
+
+		.principle-list {
+			list-style: none;
+			display: flex;
+			flex-direction: column;
+			gap: 9px;
+			padding: 0;
+			margin: 0;
+			flex: 1;
+		}
+
+		.principle-list li {
+			font-size: 13.5px;
+			line-height: 1.55;
+			color: rgba(216, 200, 245, 0.7);
+			font-weight: 300;
+			padding-left: 18px;
+			position: relative;
+		}
+
+		.principle-list li::before {
+			content: '';
+			position: absolute;
+			left: 0;
+			top: 9px;
+			width: 5px;
+			height: 5px;
+			border-radius: 50%;
+			background: rgba(187, 134, 252, 0.55);
+		}
+
+		.principle-metric {
+			padding-top: 22px;
+			border-top: 1px solid rgba(170, 130, 235, 0.18);
+			display: flex;
+			flex-direction: column;
+			gap: 6px;
+		}
+
+		.principle-metric .metric-num {
+			font-family: 'Playfair Display', serif;
+			font-size: clamp(40px, 4vw, 52px);
+			font-weight: 500;
+			color: #BB86FC;
+			line-height: 1;
+			letter-spacing: -1.5px;
+			font-variant-numeric: lining-nums tabular-nums;
+			font-feature-settings: "lnum", "tnum";
+		}
+
+		.principle-metric .metric-label {
+			font-family: 'Inter', sans-serif;
+			font-size: 11px;
+			letter-spacing: 2.5px;
+			text-transform: uppercase;
+			color: rgba(216, 200, 245, 0.7);
+			font-weight: 500;
+		}
+
+		/* ── Process workflow (paired rows: image + text alternating) ── */
+		.process-flow {
+			margin-top: 56px;
+			display: flex;
+			flex-direction: column;
+			gap: 100px;
+		}
+
+		.process-row {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 80px;
+			align-items: center;
+		}
+
+		.process-row.reverse .process-row-image {
+			grid-column: 2;
+			grid-row: 1;
+		}
+		.process-row.reverse .process-row-text {
+			grid-column: 1;
+			grid-row: 1;
+		}
+
+		.process-row-image {
+			position: relative;
+			height: 460px;
+			border-radius: 22px;
+			overflow: hidden;
+			border: 1px solid rgba(170, 130, 235, 0.2);
+			background: linear-gradient(160deg, rgba(28, 14, 50, 0.9), rgba(15, 8, 30, 0.7));
+			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+			opacity: 0;
+			transform: translateY(40px);
+		}
+
+		.process-row-image img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			object-position: center;
+			display: block;
+			transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+		}
+
+		.process-row-image:hover img {
+			transform: scale(1.03);
+		}
+
+		.process-image-label {
+			position: absolute;
+			bottom: 20px;
+			left: 22px;
+			z-index: 2;
+			font-family: 'Inter', sans-serif;
+			font-size: 11px;
+			letter-spacing: 3px;
+			text-transform: uppercase;
+			color: rgba(255, 255, 255, 0.96);
+			padding: 8px 14px;
+			background: rgba(15, 8, 30, 0.6);
+			-webkit-backdrop-filter: blur(10px);
+			backdrop-filter: blur(10px);
+			border-radius: 999px;
+			border: 1px solid rgba(187, 134, 252, 0.35);
+			pointer-events: none;
+		}
+
+		.process-row-text {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+
+		.process-row-text .num {
+			font-family: 'Playfair Display', serif;
+			font-size: 52px;
+			font-weight: 400;
+			color: rgba(187, 134, 252, 0.7);
+			line-height: 1;
+			margin-bottom: 18px;
+			font-variant-numeric: lining-nums tabular-nums;
+			font-feature-settings: "lnum", "tnum";
+		}
+
+		.process-row-text h3 {
+			font-family: 'Playfair Display', serif;
+			font-size: clamp(26px, 2.8vw, 36px);
+			font-weight: 500;
+			color: rgba(248, 244, 255, 0.97);
+			margin-bottom: 18px;
+			letter-spacing: -0.5px;
+		}
+
+		.process-row-text p {
+			font-family: 'Inter', sans-serif;
+			font-size: 15px;
+			line-height: 1.7;
+			color: rgba(216, 200, 245, 0.78);
+			font-weight: 300;
+			max-width: 460px;
+		}
+
+		@media (max-width: 900px) {
+			.process-flow { gap: 70px; }
+			.process-row,
+			.process-row.reverse {
+				grid-template-columns: 1fr;
+				gap: 28px;
+			}
+			.process-row.reverse .process-row-image,
+			.process-row.reverse .process-row-text {
+				grid-column: 1;
+				grid-row: auto;
+			}
+			.process-row-image { height: 280px; }
+		}
+
+		/* ── Outcomes / Stats ── */
+		.outcomes h2 {
+			font-family: 'Playfair Display', serif;
+			font-size: clamp(36px, 5vw, 56px);
+			font-weight: 400;
+			line-height: 1.1;
+			letter-spacing: -1px;
+			max-width: 800px;
+			margin: 28px 0 24px;
+			color: rgba(248, 244, 255, 0.96);
+			opacity: 0;
+			transform: translateY(30px);
+		}
+
+		.outcomes h2 em {
+			font-style: italic;
+			color: #BB86FC;
+		}
+
+		/* ── Outcomes data-viz cards ── */
+		.outcomes-grid {
+			margin: 70px 0 0;
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 24px;
+		}
+
+		@media (max-width: 800px) {
+			.outcomes-grid { grid-template-columns: 1fr; }
+		}
+
+		.outcome-card {
+			padding: 32px 30px 28px;
+			border-radius: 22px;
+			background: linear-gradient(160deg, rgba(28, 14, 50, 0.85), rgba(15, 8, 30, 0.6));
+			border: 1px solid rgba(170, 130, 235, 0.2);
+			-webkit-backdrop-filter: blur(18px);
+			backdrop-filter: blur(18px);
+			box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+			opacity: 0;
+			transform: translateY(40px);
+			display: flex;
+			flex-direction: column;
+			min-height: 320px;
+			transition: border-color 0.5s ease;
+		}
+
+		.outcome-card:hover {
+			border-color: rgba(187, 134, 252, 0.45);
+		}
+
+		.outcome-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding-bottom: 22px;
+			border-bottom: 1px solid rgba(170, 130, 235, 0.16);
+			gap: 16px;
+		}
+
+		.outcome-title {
+			font-family: 'Inter', sans-serif;
+			font-size: 11px;
+			letter-spacing: 3px;
+			text-transform: uppercase;
+			color: rgba(225, 205, 255, 0.78);
+			font-weight: 500;
+		}
+
+		.outcome-pill {
+			padding: 6px 14px;
+			background: rgba(98, 0, 238, 0.25);
+			border: 1px solid rgba(187, 134, 252, 0.55);
+			border-radius: 999px;
+			font-size: 12px;
+			font-weight: 600;
+			color: rgba(245, 232, 255, 1);
+			letter-spacing: 0.5px;
+			white-space: nowrap;
+		}
+
+		/* Hero-metric variant */
+		.outcome-card.hero-metric .outcome-big-number {
+			font-family: 'Playfair Display', serif;
+			font-size: clamp(72px, 9vw, 120px);
+			font-weight: 400;
+			line-height: 1;
+			color: rgba(248, 240, 255, 1);
+			margin: 32px 0 14px;
+			letter-spacing: -2px;
+			font-variant-numeric: lining-nums tabular-nums;
+			font-feature-settings: "lnum", "tnum";
+		}
+
+		.outcome-big-sub {
+			font-family: 'Inter', sans-serif;
+			font-size: 13px;
+			color: rgba(216, 200, 245, 0.72);
+			margin-bottom: 28px;
+			line-height: 1.5;
+			font-weight: 300;
+		}
+
+		.outcome-before-after {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 12px;
+			margin-top: auto;
+		}
+
+		.outcome-ba-cell {
+			padding: 12px 14px;
+			border-radius: 12px;
+			background: rgba(15, 8, 30, 0.7);
+			border: 1px solid rgba(170, 130, 235, 0.12);
+		}
+
+		.outcome-ba-cell.after {
+			background: linear-gradient(135deg, rgba(98, 0, 238, 0.28), rgba(187, 134, 252, 0.16));
+			border: 1px solid rgba(187, 134, 252, 0.55);
+		}
+
+		.outcome-ba-label {
+			font-size: 9px;
+			letter-spacing: 2.5px;
+			text-transform: uppercase;
+			color: rgba(187, 134, 252, 0.7);
+			margin-bottom: 6px;
+			font-weight: 500;
+		}
+
+		.outcome-ba-value {
+			font-family: 'Inter', sans-serif;
+			font-size: 14px;
+			color: rgba(245, 232, 255, 0.95);
+			font-weight: 500;
+		}
+
+		/* Bar-comparison variant */
+		.outcome-card .outcome-bars {
+			display: flex;
+			flex-direction: column;
+			gap: 24px;
+			margin-top: 32px;
+			flex: 1;
+		}
+
+		.outcome-bar-row {
+			display: grid;
+			grid-template-columns: 60px 70px 1fr;
+			align-items: center;
+			gap: 14px;
+		}
+
+		.outcome-bar-label {
+			font-family: 'Inter', sans-serif;
+			font-size: 11px;
+			letter-spacing: 2px;
+			text-transform: uppercase;
+			color: rgba(216, 200, 245, 0.6);
+			font-weight: 500;
+		}
+
+		.outcome-bar-value {
+			font-family: 'Playfair Display', serif;
+			font-size: 30px;
+			font-weight: 500;
+			color: rgba(245, 232, 255, 0.95);
+			font-variant-numeric: lining-nums tabular-nums;
+			font-feature-settings: "lnum", "tnum";
+			text-align: right;
+		}
+
+		.outcome-bar-row.muted .outcome-bar-value {
+			color: rgba(216, 200, 245, 0.45);
+		}
+
+		.outcome-bar-track {
+			height: 10px;
+			background: rgba(170, 130, 235, 0.1);
+			border-radius: 6px;
+			overflow: hidden;
+			position: relative;
+		}
+
+		.outcome-bar-fill {
+			height: 100%;
+			background: linear-gradient(90deg, #6200EE 0%, #BB86FC 100%);
+			border-radius: 6px;
+			width: 0%;
+			transition: width 1.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+			box-shadow: 0 0 16px rgba(187, 134, 252, 0.45);
+		}
+
+		.outcome-bar-fill.muted {
+			background: linear-gradient(90deg, rgba(120, 90, 200, 0.45), rgba(170, 130, 235, 0.32));
+			box-shadow: none;
+		}
+
+		.outcome-caption {
+			margin-top: auto;
+			padding-top: 22px;
+			border-top: 1px solid rgba(170, 130, 235, 0.16);
+			font-size: 13px;
+			color: rgba(216, 200, 245, 0.7);
+			font-weight: 300;
+			line-height: 1.5;
+		}
+
+		.outcome-caption strong {
+			color: rgba(187, 134, 252, 0.95);
+			font-weight: 500;
+		}
+
+		@media (max-width: 480px) {
+			.outcome-bar-row {
+				grid-template-columns: 50px 56px 1fr;
+				gap: 10px;
+			}
+			.outcome-bar-value { font-size: 24px; }
+			.outcome-card { padding: 26px 22px 22px; }
+		}
+
+		/* ── Reflection ── */
+		.reflection-body {
+			font-family: 'Inter', sans-serif;
+			font-size: clamp(17px, 1.7vw, 21px);
+			font-weight: 400;
+			font-style: normal;
+			line-height: 1.7;
+			max-width: 760px;
+			color: rgba(245, 232, 255, 0.92);
+			margin-top: 36px;
+			opacity: 0;
+			transform: translateY(30px);
+			text-wrap: pretty;
+		}
+
+		.reflection-body em {
+			font-style: normal;
+			color: #BB86FC;
+			font-weight: 500;
+		}
+
+		/* ── CTA ── */
+		.cta-section {
+			text-align: center;
+			padding: 140px 0 100px;
+		}
+
+		.cta-section h2 {
+			font-family: 'Playfair Display', serif;
+			font-size: clamp(36px, 5.5vw, 60px);
+			font-weight: 400;
+			line-height: 1.15;
+			color: rgba(248, 244, 255, 0.97);
+			margin: 30px 0 24px;
+			opacity: 0;
+			transform: translateY(30px);
+		}
+
+		.cta-section h2 em {
+			font-style: italic;
+			color: #BB86FC;
+		}
+
+		.cta-sub {
+			font-size: 15px;
+			color: rgba(216, 200, 245, 0.78);
+			max-width: 480px;
+			margin: 0 auto 36px;
+			line-height: 1.7;
+			font-weight: 300;
+			opacity: 0;
+			transform: translateY(20px);
+			text-wrap: balance;
+		}
+
+		.cta-btn {
+			display: inline-flex;
+			align-items: center;
+			gap: 10px;
+			padding: 14px 36px;
+			border: 1px solid rgba(187, 134, 252, 0.4);
+			border-radius: 40px;
+			background: rgba(30, 12, 60, 0.4);
+			color: rgba(245, 232, 255, 1);
+			font-size: 13px;
+			font-weight: 500;
+			letter-spacing: 1.5px;
+			text-transform: uppercase;
+			cursor: pointer;
+			transition: all 0.4s;
+			opacity: 0;
+			transform: translateY(20px);
+			backdrop-filter: blur(10px);
+		}
+
+		.cta-btn:hover {
+			background: rgba(60, 25, 110, 0.5);
+			border-color: rgba(187, 134, 252, 0.7);
+			transform: translateY(-2px) !important;
+		}
+
+		/* ── Site footer ── */
+		.site-footer {
+			position: relative;
+			z-index: 2;
+			border-top: 1px solid rgba(120, 90, 200, 0.08);
+			padding: 60px 40px 40px;
+		}
+
+		.site-footer-inner {
+			max-width: 1100px;
+			margin: 0 auto;
+			display: flex;
+			align-items: flex-start;
+		}
+
+		.sf-brand {
+			display: flex;
+			flex-direction: column;
+			gap: 14px;
+		}
+
+		.sf-brand-name {
+			font-family: 'Playfair Display', serif;
+			font-size: 22px;
+			color: rgba(240, 230, 255, 0.7);
+			letter-spacing: 1px;
+		}
+
+		.sf-brand-desc {
+			font-size: 12px;
+			line-height: 1.7;
+			color: rgba(238, 226, 255, 0.4);
+			font-weight: 300;
+			max-width: 260px;
+		}
+
+		.sf-bottom {
+			max-width: 1100px;
+			margin: 40px auto 0;
+			padding-top: 24px;
+			border-top: 1px solid rgba(120, 90, 200, 0.06);
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 12px;
+		}
+
+		.sf-copy {
+			font-size: 11px;
+			color: rgba(238, 226, 255, 0.25);
+			letter-spacing: 0.5px;
+		}
+
+		.sf-socials {
+			display: flex;
+			gap: 18px;
+		}
+
+		.sf-socials a {
+			font-size: 11px;
+			color: rgba(238, 226, 255, 0.35);
+			text-decoration: none;
+			letter-spacing: 1px;
+			text-transform: uppercase;
+			transition: color 0.3s;
+		}
+
+		.sf-socials a:hover { color: rgba(245, 232, 255, 0.95); }
+
+		/* ── Reveal on scroll ── */
+		.revealed {
+			opacity: 1 !important;
+			transform: translateY(0) !important;
+			transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+						transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+		}
+		.delay-1 { transition-delay: 0.1s !important; }
+		.delay-2 { transition-delay: 0.25s !important; }
+		.delay-3 { transition-delay: 0.4s !important; }
+		.delay-4 { transition-delay: 0.55s !important; }
+		.delay-5 { transition-delay: 0.7s !important; }
+	</style>
+</head>
+
+<body>
+	<a href="#main" class="skip-link">Skip to main content</a>
+	<nav class="nav-float">
+		<a class="nav-logo" href="index.html">Mai<span class="nav-logo-accent">.E</span></a>
+		<div class="nav-links">
+			<a href="index.html#about">About</a>
+			<a href="portfolio.html">Portfolio</a>
+			<a href="https://wa.me/5493413592122" target="_blank" rel="noopener noreferrer" class="nav-contact-btn">Contact</a>
+		</div>
+		<button class="nav-hamburger" aria-label="Menu" onclick="window.location.href='index.html'">
+			<span></span><span></span><span></span>
+		</button>
+	</nav>
+
+	<a class="nav-back" href="portfolio.html">← Back</a>
+
+	<main id="main">
+		<!-- ─────────── HERO ─────────── -->
+		<section class="section hero">
+			<div class="case-wrap">
+				<span class="eyebrow" data-reveal>Case Study</span>
+
+				<div class="hero-meta" data-reveal data-delay="1">
+					<div class="hero-meta-item">
+						<span class="label">Role</span>
+						<span class="value">Product Designer</span>
+					</div>
+					<div class="hero-meta-item">
+						<span class="label">Deliverables</span>
+						<span class="value">Design System</span>
+					</div>
+					<div class="hero-meta-item">
+						<span class="label">Started</span>
+						<span class="value">September 2020</span>
+					</div>
+					<div class="hero-meta-item">
+						<span class="label">Stack</span>
+						<span class="value">Tailwind &middot; React</span>
+					</div>
+				</div>
+
+				<h1 data-reveal data-delay="2">Irys <em>Design System</em></h1>
+
+				<p class="hero-tagline" data-reveal data-delay="3">A cohesive, accessible foundation powering every Irys surface — from citizen mobile to government dashboard.</p>
+
+				<div class="hero-image-wrap" data-reveal data-delay="4">
+					<img src="portfolio-img/irys-design-system.webp" alt="Irys design system overview with typography scales, color tokens, and component library" width="1100" height="400" decoding="async" />
+				</div>
+			</div>
+		</section>
+
+		<!-- ─────────── PROBLEM ─────────── -->
+		<section class="section story">
+			<div class="case-wrap">
+				<span class="eyebrow" data-reveal>The Problem</span>
+				<h2 data-reveal data-delay="1">Two products. One <em>language</em>.</h2>
+				<p class="story-pull" data-reveal data-delay="2">"Two products built in parallel can't speak two different design languages."</p>
+				<p class="story-body" data-reveal data-delay="3">The Irys mobile app and the Irys Government Dashboard were being designed and developed at the same time, by different teams, with limited time and a large surface to cover. Without a shared system, each interface risked drifting — different spacing, inconsistent components, divergent accessibility patterns — leaving the brand fragmented and the team paying technical debt for years to come.</p>
+			</div>
+		</section>
+
+		<!-- ─────────── DIAGNOSIS ─────────── -->
+		<section class="section story">
+			<div class="case-wrap">
+				<span class="eyebrow" data-reveal>Diagnosis</span>
+				<h2 data-reveal data-delay="1">The bottleneck wasn't design — it was <em>repetition</em>.</h2>
+				<p class="story-pull" data-reveal data-delay="2">Every screen rebuilt patterns from scratch. Every fix was multiplied by two.</p>
+				<p class="story-body" data-reveal data-delay="3">Buttons, forms, navigation, color tokens, typography — each surface re-invented the same primitives, slightly differently. Designers spent hours aligning spacing across files. Developers translated one-off mockups into bespoke CSS. Accessibility checks were repeated case by case. Without a shared library, scaling new features meant re-litigating the basics every time. The fix had to be structural: <strong>a single, opinionated system, built once and consumed by both products</strong>.</p>
+
+				<div class="marquee" data-reveal data-delay="4">
+					<div class="marquee-track">
+						<span class="marquee-item">No Tokens</span>
+						<span class="marquee-item">No Components</span>
+						<span class="marquee-item">No Patterns</span>
+						<span class="marquee-item">No Standards</span>
+						<span class="marquee-item">No Reuse</span>
+						<span class="marquee-item">No Tokens</span>
+						<span class="marquee-item">No Components</span>
+						<span class="marquee-item">No Patterns</span>
+						<span class="marquee-item">No Standards</span>
+						<span class="marquee-item">No Reuse</span>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- ─────────── PROCESS ─────────── -->
+		<section class="section story">
+			<div class="case-wrap">
+				<span class="eyebrow" data-reveal>Process Workflow</span>
+				<h2 data-reveal data-delay="1">Built once, consumed <em>everywhere</em>.</h2>
+				<p class="story-body" data-reveal data-delay="2">With limited development time, the system had to be opinionated, lean, and ready to ship. I built it on Tailwind CSS for speed and React for component reusability, then evolved it surface by surface as the mobile and dashboard products grew.</p>
+
+				<div class="process-flow">
+					<div class="process-row">
+						<div class="process-row-image" data-reveal>
+							<img src="portfolio-img/irys-design-system.webp" alt="Foundational tokens — color, spacing, typography, radii — defined once" loading="lazy" decoding="async" width="500" height="460" />
+							<span class="process-image-label">Foundations</span>
+						</div>
+						<div class="process-row-text" data-reveal data-delay="1">
+							<span class="num">01</span>
+							<h3>Define the tokens</h3>
+							<p>Established the foundational layer first: color scales, typography ramp (Inter), spacing units, radii, and elevation. Wired these to Tailwind's config so every value had a single source of truth across products and engineering.</p>
+						</div>
+					</div>
+
+					<div class="process-row reverse">
+						<div class="process-row-image" data-reveal>
+							<img src="portfolio-img/irys-mobile.webp" alt="Component variants — buttons, inputs, cards — designed for both mobile and dashboard" loading="lazy" decoding="async" width="500" height="460" />
+							<span class="process-image-label">Component Library</span>
+						</div>
+						<div class="process-row-text" data-reveal data-delay="1">
+							<span class="num">02</span>
+							<h3>Build the primitives</h3>
+							<p>Designed and built the core component set in React: buttons (primary, secondary, outline, disabled), form fields (input, checkbox, radio, dropdown), cards, badges, and overlays. Each component shipped with variants, states, and accessibility baked in.</p>
+						</div>
+					</div>
+
+					<div class="process-row">
+						<div class="process-row-image" data-reveal>
+							<img src="portfolio-img/irys-analytics.webp" alt="Navigation patterns — sidebar, tabs, breadcrumbs — optimized for the dashboard" loading="lazy" decoding="async" width="500" height="460" />
+							<span class="process-image-label">Patterns</span>
+						</div>
+						<div class="process-row-text" data-reveal data-delay="1">
+							<span class="num">03</span>
+							<h3>Codify the patterns</h3>
+							<p>Composed primitives into recurring patterns: sidebar navigation, tab and breadcrumb systems, empty states, and data-table layouts. Documented each pattern's rationale so designers and engineers could pull from them without re-deciding.</p>
+						</div>
+					</div>
+
+					<div class="process-row reverse">
+						<div class="process-row-image" data-reveal>
+							<img src="portfolio-img/irys-background.webp" alt="Devices on plinths showing the system at work across mobile and dashboard surfaces" loading="lazy" decoding="async" width="500" height="460" />
+							<span class="process-image-label">Accessibility</span>
+						</div>
+						<div class="process-row-text" data-reveal data-delay="1">
+							<span class="num">04</span>
+							<h3>Bake in accessibility</h3>
+							<p>Audited every component against WCAG 2.1 AA: contrast ratios, keyboard navigation, ARIA labels, and visible focus states. Made accessibility a property of the system, not an afterthought of each feature — so teams inherit it for free.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- ─────────── SOLUTION ─────────── -->
+		<section class="section story">
+			<div class="case-wrap">
+				<span class="eyebrow" data-reveal>The Solution</span>
+				<h2 data-reveal data-delay="1">Four principles holding the system <em>together</em>.</h2>
+				<p class="story-body solution-intro" data-reveal data-delay="2">The system was built around four principles: consistency across products, accessibility by default, efficiency for teams, and scalability for what comes next. Every token, component, and pattern serves at least one of them.</p>
+
+				<div class="principle-grid">
+					<article class="principle-card" data-reveal data-delay="1">
+						<h3>Consistency</h3>
+						<ul class="principle-list">
+							<li>Unified design language</li>
+							<li>Shared color tokens</li>
+							<li>One typography ramp</li>
+							<li>Aligned spacing scale</li>
+							<li>Cross-product parity</li>
+							<li>Single source of truth</li>
+							<li>Reduced visual drift</li>
+							<li>Predictable interactions</li>
+						</ul>
+						<div class="principle-metric">
+							<span class="metric-num">2 → 1</span>
+							<span class="metric-label">Design Languages Unified</span>
+						</div>
+					</article>
+
+					<article class="principle-card" data-reveal data-delay="2">
+						<h3>Accessibility</h3>
+						<ul class="principle-list">
+							<li>WCAG 2.1 AA compliance</li>
+							<li>Sufficient color contrast</li>
+							<li>Full keyboard navigation</li>
+							<li>ARIA labels in components</li>
+							<li>Visible focus states</li>
+							<li>Touch targets ≥ 44px</li>
+							<li>Screen-reader tested</li>
+							<li>Inclusive by default</li>
+						</ul>
+						<div class="principle-metric">
+							<span class="metric-num">AA</span>
+							<span class="metric-label">WCAG 2.1 Coverage</span>
+						</div>
+					</article>
+
+					<article class="principle-card" data-reveal data-delay="3">
+						<h3>Efficiency &amp; Scale</h3>
+						<ul class="principle-list">
+							<li>Tailwind utility classes</li>
+							<li>React component reuse</li>
+							<li>Mobile-first responsiveness</li>
+							<li>Predefined variant API</li>
+							<li>Faster feature delivery</li>
+							<li>Less custom CSS</li>
+							<li>Lower technical debt</li>
+							<li>Ready for new surfaces</li>
+						</ul>
+						<div class="principle-metric">
+							<span class="metric-num">−60%</span>
+							<span class="metric-label">Custom CSS Written</span>
+						</div>
+					</article>
+				</div>
+
+				<div class="solution-carousel" data-reveal data-delay="2">
+					<div class="solution-carousel-track" id="solutionTrack">
+						<div class="solution-slide">
+							<span class="solution-slide-pill">Tokens</span>
+							<img src="portfolio-img/irys-design-system.webp" alt="Color, typography, and spacing tokens powering both products" loading="lazy" decoding="async" width="1100" height="560" />
+						</div>
+						<div class="solution-slide">
+							<span class="solution-slide-pill">Components</span>
+							<img src="portfolio-img/irys-mobile.webp" alt="Mobile components — buttons, forms, cards — built from the system" loading="lazy" decoding="async" width="1100" height="560" />
+						</div>
+						<div class="solution-slide">
+							<span class="solution-slide-pill">Patterns</span>
+							<img src="portfolio-img/irys-analytics.webp" alt="Dashboard navigation and data layouts composed from system patterns" loading="lazy" decoding="async" width="1100" height="560" />
+						</div>
+					</div>
+					<div class="solution-carousel-controls">
+						<button class="solution-carousel-arrow" id="solutionPrev" aria-label="Previous slide">←</button>
+						<div class="solution-carousel-dots" id="solutionDots">
+							<button class="solution-carousel-dot active" data-slide="0" aria-label="Slide 1"></button>
+							<button class="solution-carousel-dot" data-slide="1" aria-label="Slide 2"></button>
+							<button class="solution-carousel-dot" data-slide="2" aria-label="Slide 3"></button>
+						</div>
+						<button class="solution-carousel-arrow" id="solutionNext" aria-label="Next slide">→</button>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- ─────────── OUTCOMES ─────────── -->
+		<section class="section outcomes">
+			<div class="case-wrap">
+				<span class="eyebrow" data-reveal>What Changed</span>
+				<h2 data-reveal data-delay="1">From scattered files to a <em>shipping system</em>.</h2>
+				<p class="story-body" data-reveal data-delay="2">Once the system was in place, both products started speaking the same language. New screens shipped faster because designers and engineers stopped re-deciding the basics. Accessibility became a property of the toolkit rather than a checklist per feature. The system absorbed change instead of breaking under it.</p>
+
+				<div class="outcomes-grid">
+					<!-- Card 1: Hero metric — Components Shared -->
+					<article class="outcome-card hero-metric" data-reveal data-delay="1">
+						<div class="outcome-header">
+							<span class="outcome-title">Component Reuse</span>
+							<span class="outcome-pill">↑ +80%</span>
+						</div>
+						<div class="outcome-big-number" data-count="80" data-prefix="+" data-suffix="%">+0%</div>
+						<div class="outcome-big-sub">UI shared between mobile &amp; dashboard</div>
+						<div class="outcome-before-after">
+							<div class="outcome-ba-cell">
+								<div class="outcome-ba-label">Before</div>
+								<div class="outcome-ba-value">Duplicated work</div>
+							</div>
+							<div class="outcome-ba-cell after">
+								<div class="outcome-ba-label">After</div>
+								<div class="outcome-ba-value">Shared library</div>
+							</div>
+						</div>
+					</article>
+
+					<!-- Card 2: Bar comparison — Custom CSS Written -->
+					<article class="outcome-card bar-card" data-reveal data-delay="2">
+						<div class="outcome-header">
+							<span class="outcome-title">Custom CSS</span>
+							<span class="outcome-pill">↓ 60%</span>
+						</div>
+						<div class="outcome-bars">
+							<div class="outcome-bar-row muted">
+								<span class="outcome-bar-label">Before</span>
+								<span class="outcome-bar-value">100%</span>
+								<div class="outcome-bar-track">
+									<div class="outcome-bar-fill muted" data-width="100"></div>
+								</div>
+							</div>
+							<div class="outcome-bar-row">
+								<span class="outcome-bar-label">After</span>
+								<span class="outcome-bar-value">40%</span>
+								<div class="outcome-bar-track">
+									<div class="outcome-bar-fill" data-width="40"></div>
+								</div>
+							</div>
+						</div>
+						<div class="outcome-caption">Less bespoke styling thanks to <strong>Tailwind utilities</strong></div>
+					</article>
+
+					<!-- Card 3: Hero metric — Accessibility -->
+					<article class="outcome-card hero-metric" data-reveal data-delay="3">
+						<div class="outcome-header">
+							<span class="outcome-title">Accessibility</span>
+							<span class="outcome-pill">WCAG 2.1 AA</span>
+						</div>
+						<div class="outcome-big-number" data-count="100" data-prefix="" data-suffix="%">0%</div>
+						<div class="outcome-big-sub">of components meet AA contrast &amp; keyboard standards</div>
+						<div class="outcome-before-after">
+							<div class="outcome-ba-cell">
+								<div class="outcome-ba-label">Before</div>
+								<div class="outcome-ba-value">Per-feature audits</div>
+							</div>
+							<div class="outcome-ba-cell after">
+								<div class="outcome-ba-label">After</div>
+								<div class="outcome-ba-value">Built into tokens</div>
+							</div>
+						</div>
+					</article>
+
+					<!-- Card 4: Bar comparison — Time to Ship a New Screen -->
+					<article class="outcome-card bar-card" data-reveal data-delay="4">
+						<div class="outcome-header">
+							<span class="outcome-title">Time to Ship a Screen</span>
+							<span class="outcome-pill">↓ 50%</span>
+						</div>
+						<div class="outcome-bars">
+							<div class="outcome-bar-row muted">
+								<span class="outcome-bar-label">Before</span>
+								<span class="outcome-bar-value">100%</span>
+								<div class="outcome-bar-track">
+									<div class="outcome-bar-fill muted" data-width="100"></div>
+								</div>
+							</div>
+							<div class="outcome-bar-row">
+								<span class="outcome-bar-label">After</span>
+								<span class="outcome-bar-value">50%</span>
+								<div class="outcome-bar-track">
+									<div class="outcome-bar-fill" data-width="50"></div>
+								</div>
+							</div>
+						</div>
+						<div class="outcome-caption">Faster delivery thanks to <strong>reusable primitives</strong></div>
+					</article>
+				</div>
+			</div>
+		</section>
+
+		<!-- ─────────── REFLECTION ─────────── -->
+		<section class="section story">
+			<div class="case-wrap">
+				<span class="eyebrow" data-reveal>Reflection</span>
+				<h2 data-reveal data-delay="1">What I learned.</h2>
+				<p class="reflection-body" data-reveal data-delay="2">Building this system reinforced that <em>a design system is infrastructure, not decoration</em>. Its real value isn't in the polished components — it's in the decisions that no longer need to be re-litigated, the accessibility that no longer needs to be re-checked, and the speed teams gain when the basics are solved once and shared. The lesson stuck: invest early in the foundation, and every product on top of it gets faster, more consistent, and more humane to use.</p>
+			</div>
+		</section>
+
+		<!-- ─────────── CTA ─────────── -->
+		<section class="section cta-section">
+			<div class="case-wrap">
+				<span class="eyebrow" data-reveal>Let's Talk</span>
+				<h2 data-reveal data-delay="1">Have a project<br>in <em>mind</em>?</h2>
+				<p class="cta-sub" data-reveal data-delay="2">I'm open to selected collaborations and projects. Let's talk about what you're building, and how it can work better.</p>
+				<a href="https://wa.me/5493413592122" target="_blank" rel="noopener noreferrer" class="cta-btn" data-reveal data-delay="3">Get in Touch →</a>
+			</div>
+		</section>
+	</main>
+
+	<footer class="site-footer">
+		<div class="site-footer-inner">
+			<div class="sf-brand">
+				<div class="sf-brand-name">Mai Esquivel</div>
+				<p class="sf-brand-desc">Independent designer focused on product thinking, systems, and real-world problems.</p>
+			</div>
+		</div>
+		<div class="sf-bottom">
+			<span class="sf-copy">© 2026 Mai Esquivel. Designed with care.</span>
+			<div class="sf-socials">
+				<a href="mailto:maiesquivel@hotmail.com">Email</a>
+				<a href="https://www.linkedin.com/in/maira-esquivel/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+			</div>
+		</div>
+	</footer>
+
+	<script>
+		// Reveal-on-scroll using IntersectionObserver
+		const revealObserver = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				if (entry.isIntersecting) {
+					const el = entry.target;
+					const delay = el.dataset.delay || '0';
+					el.classList.add('revealed', `delay-${delay}`);
+					revealObserver.unobserve(el);
+				}
+			});
+		}, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
+
+		document.querySelectorAll('[data-reveal]').forEach(el => revealObserver.observe(el));
+
+		// Solution carousel — scroll-snap with dot/arrow controls
+		(function setupSolutionCarousel() {
+			const track = document.getElementById('solutionTrack');
+			const dots = document.querySelectorAll('#solutionDots .solution-carousel-dot');
+			const prevBtn = document.getElementById('solutionPrev');
+			const nextBtn = document.getElementById('solutionNext');
+			if (!track || !dots.length) return;
+
+			const total = track.children.length;
+			let current = 0;
+
+			function getSlideStep() {
+				const slide = track.children[0];
+				if (!slide) return 0;
+				return slide.offsetWidth + 24; // gap
+			}
+
+			function goTo(index) {
+				index = Math.max(0, Math.min(total - 1, index));
+				current = index;
+				track.scrollTo({ left: index * getSlideStep(), behavior: 'smooth' });
+				updateUI();
+			}
+
+			function updateUI() {
+				dots.forEach((d, i) => d.classList.toggle('active', i === current));
+				if (prevBtn) prevBtn.disabled = current === 0;
+				if (nextBtn) nextBtn.disabled = current === total - 1;
+			}
+
+			dots.forEach(dot => {
+				dot.addEventListener('click', () => {
+					goTo(parseInt(dot.dataset.slide, 10));
+				});
+			});
+
+			if (prevBtn) prevBtn.addEventListener('click', () => goTo(current - 1));
+			if (nextBtn) nextBtn.addEventListener('click', () => goTo(current + 1));
+
+			// Sync state when user scrolls/swipes manually
+			let scrollTimeout = null;
+			track.addEventListener('scroll', () => {
+				clearTimeout(scrollTimeout);
+				scrollTimeout = setTimeout(() => {
+					const step = getSlideStep();
+					if (step > 0) {
+						const idx = Math.round(track.scrollLeft / step);
+						if (idx !== current) {
+							current = idx;
+							updateUI();
+						}
+					}
+				}, 80);
+			}, { passive: true });
+
+			// Re-sync on resize
+			window.addEventListener('resize', () => {
+				track.scrollTo({ left: current * getSlideStep(), behavior: 'auto' });
+			});
+
+			updateUI();
+		})();
+
+		// Hero image parallax — image translates slower than scroll within its container
+		(function setupHeroParallax() {
+			const wrap = document.querySelector('.hero-image-wrap');
+			if (!wrap) return;
+			const img = wrap.querySelector('img');
+			if (!img) return;
+
+			let raf = null;
+			const STRENGTH = 80; // max px of vertical translation
+
+			function update() {
+				raf = null;
+				const rect = wrap.getBoundingClientRect();
+				const vh = window.innerHeight;
+				// Skip if completely off-screen
+				if (rect.bottom < -100 || rect.top > vh + 100) return;
+				// progress: -1 (just entering from below) → 0 (centered) → 1 (just leaving up)
+				const center = rect.top + rect.height / 2;
+				const progress = (center - vh / 2) / (vh / 2 + rect.height / 2);
+				// clamp
+				const clamped = Math.max(-1, Math.min(1, progress));
+				// Translate: when scrolling down past the image, image moves up slower than scroll
+				const translateY = -clamped * STRENGTH;
+				img.style.transform = `translate3d(0, ${translateY}px, 0)`;
+			}
+
+			function schedule() {
+				if (raf) return;
+				raf = requestAnimationFrame(update);
+			}
+
+			window.addEventListener('scroll', schedule, { passive: true });
+			window.addEventListener('resize', schedule);
+			update();
+		})();
+
+		// Outcomes data-viz animations: count-up big numbers + bar fills
+		(function setupOutcomeAnimations() {
+			const outcomesSection = document.querySelector('.outcomes');
+			if (!outcomesSection) return;
+
+			// Big numbers in hero-metric cards
+			const numbers = Array.from(document.querySelectorAll('.outcome-big-number')).map((el, idx) => ({
+				el,
+				prefix: el.dataset.prefix || '',
+				suffix: el.dataset.suffix || '',
+				target: parseInt(el.dataset.count, 10) || 0,
+				delay: 200 + idx * 200
+			}));
+
+			// Bar fills
+			const bars = Array.from(document.querySelectorAll('.outcome-bar-fill')).map((el, idx) => ({
+				el,
+				targetWidth: parseFloat(el.dataset.width) || 0,
+				delay: 350 + idx * 100
+			}));
+
+			function animateNumber(item) {
+				const duration = 2400;
+				const start = performance.now();
+				function tick(now) {
+					const t = Math.min(1, (now - start) / duration);
+					const eased = 1 - Math.pow(1 - t, 5);
+					const value = Math.round(item.target * eased);
+					item.el.textContent = item.prefix + value + item.suffix;
+					if (t < 1) requestAnimationFrame(tick);
+					else item.el.textContent = item.prefix + item.target + item.suffix;
+				}
+				requestAnimationFrame(tick);
+			}
+
+			function animateBar(item) {
+				item.el.style.width = item.targetWidth + '%';
+			}
+
+			const observer = new IntersectionObserver((entries) => {
+				entries.forEach(entry => {
+					if (entry.isIntersecting) {
+						numbers.forEach(n => setTimeout(() => animateNumber(n), n.delay));
+						bars.forEach(b => setTimeout(() => animateBar(b), b.delay));
+						observer.unobserve(entry.target);
+					}
+				});
+			}, { threshold: 0.3 });
+
+			observer.observe(outcomesSection);
+		})();
+	</script>
+</body>
+</html>
