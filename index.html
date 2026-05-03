@@ -11,6 +11,57 @@
 
 		*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+		/* ── Accessibility: keyboard focus states ──
+		   :focus-visible only shows the ring for keyboard users (Tab navigation),
+		   not when clicking with a mouse — keeps the design clean while staying a11y-compliant. */
+		*:focus { outline: none; }
+		*:focus-visible {
+			outline: 2px solid #BB86FC;
+			outline-offset: 3px;
+			border-radius: 4px;
+		}
+		a:focus-visible,
+		button:focus-visible {
+			outline: 2px solid #BB86FC;
+			outline-offset: 3px;
+			box-shadow: 0 0 0 4px rgba(187, 134, 252, 0.18);
+		}
+		.portfolio-card:focus-visible {
+			outline: 2px solid #BB86FC;
+			outline-offset: 4px;
+			border-radius: 18px;
+			box-shadow: 0 0 0 6px rgba(187, 134, 252, 0.18), 0 18px 48px rgba(98, 0, 238, 0.28);
+			transform: translateY(-4px);
+		}
+		.portfolio-card.coming-soon:focus-visible {
+			outline-color: rgba(187, 134, 252, 0.4);
+			box-shadow: none;
+			transform: none;
+		}
+		.cta-btn:focus-visible {
+			outline: 2px solid #BB86FC;
+			outline-offset: 4px;
+			box-shadow: 0 0 0 6px rgba(187, 134, 252, 0.22);
+		}
+		/* Skip-to-content link for screen-reader / keyboard users */
+		.skip-link {
+			position: absolute;
+			left: -9999px;
+			top: 0;
+			background: #1a0040;
+			color: #f5f0ff;
+			padding: 12px 18px;
+			border-radius: 8px;
+			border: 1px solid rgba(187, 134, 252, 0.5);
+			z-index: 1000;
+			font-size: 14px;
+			text-decoration: none;
+		}
+		.skip-link:focus {
+			left: 16px;
+			top: 16px;
+		}
+
 		html, body {
 			width: 100%;
 			min-height: 100%;
@@ -1381,6 +1432,7 @@
 </head>
 
 <body>
+	<a href="#main" class="skip-link">Skip to main content</a>
 	<div class="progress-bar" id="progressBar"></div>
 
 	<nav class="nav-float" id="navFloat">
@@ -1402,7 +1454,7 @@
 	</div>
 
 	<div id="scroll-container">
-		<section class="section hero" id="heroSection" data-stage="0">
+		<section class="section hero" id="main" data-stage="0">
 			<span class="hero-tag" data-reveal data-delay="1">
 				<span class="hero-tag-rotator" aria-live="polite">
 					<span class="hero-tag-item">Product Designer UX/UI</span>

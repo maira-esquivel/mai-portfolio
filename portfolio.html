@@ -12,6 +12,55 @@
 
 		*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+		/* ── Accessibility: keyboard focus states ── */
+		*:focus { outline: none; }
+		*:focus-visible {
+			outline: 2px solid #BB86FC;
+			outline-offset: 3px;
+			border-radius: 4px;
+		}
+		a:focus-visible,
+		button:focus-visible {
+			outline: 2px solid #BB86FC;
+			outline-offset: 3px;
+			box-shadow: 0 0 0 4px rgba(187, 134, 252, 0.18);
+		}
+		.portfolio-card:focus-visible {
+			outline: 2px solid #BB86FC;
+			outline-offset: 4px;
+			border-radius: 18px;
+			box-shadow: 0 0 0 6px rgba(187, 134, 252, 0.18), 0 18px 48px rgba(98, 0, 238, 0.28);
+			transform: translateY(-4px);
+		}
+		.portfolio-card.coming-soon:focus-visible {
+			outline-color: rgba(187, 134, 252, 0.4);
+			box-shadow: none;
+			transform: none;
+		}
+		.filter-chip:focus-visible {
+			outline: 2px solid #BB86FC;
+			outline-offset: 3px;
+			box-shadow: 0 0 0 4px rgba(187, 134, 252, 0.18);
+		}
+		/* Skip-to-content link */
+		.skip-link {
+			position: absolute;
+			left: -9999px;
+			top: 0;
+			background: #1a0040;
+			color: #f5f0ff;
+			padding: 12px 18px;
+			border-radius: 8px;
+			border: 1px solid rgba(187, 134, 252, 0.5);
+			z-index: 1000;
+			font-size: 14px;
+			text-decoration: none;
+		}
+		.skip-link:focus {
+			left: 16px;
+			top: 16px;
+		}
+
 		html, body {
 			width: 100%;
 			min-height: 100%;
@@ -522,6 +571,7 @@
 </head>
 
 <body>
+	<a href="#main" class="skip-link">Skip to main content</a>
 	<nav class="nav-float">
 		<a class="nav-logo" href="index.html">Mai<span class="nav-logo-accent">.E</span></a>
 		<div class="nav-links">
@@ -540,7 +590,7 @@
 		<a href="https://wa.me/5493413592122" target="_blank" rel="noopener noreferrer" class="nav-contact-btn">Contact</a>
 	</div>
 
-	<main>
+	<main id="main">
 		<section class="portfolio-page">
 			<div class="portfolio-page-header" data-reveal>
 				<h1>Selected <em>Projects</em></h1>
