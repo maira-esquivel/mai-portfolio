@@ -88,6 +88,16 @@
 			z-index: 0;
 		}
 
+		/* Scrim — semi-transparent black layer over the canvas to improve text legibility.
+		   Sits between the canvas (z:0) and the content (z:2). */
+		.scrim {
+			position: fixed;
+			inset: 0;
+			background: rgba(0, 0, 0, 0.2);
+			z-index: 1;
+			pointer-events: none;
+		}
+
 		/* Mobile/tablet: hide the WebGPU canvas — Three.js scene is desktop-only.
 		   Replaced by a subtle violet glow background so the hero still feels alive. */
 		@media (max-width: 1023px) {
@@ -1438,6 +1448,7 @@
 
 <body>
 	<a href="#main" class="skip-link">Skip to main content</a>
+	<div class="scrim" aria-hidden="true"></div>
 	<div class="progress-bar" id="progressBar"></div>
 
 	<nav class="nav-float" id="navFloat">
