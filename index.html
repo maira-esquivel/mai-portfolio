@@ -1494,41 +1494,6 @@
 		</div>
 	</footer>
 
-	<!-- Fallback reveal: if Three.js (WebGPU) fails to init, content still appears -->
-	<script>
-		(function setupRevealFallback() {
-			// Run reveal observer immediately so content is visible regardless of WebGPU
-			const revealObserver = new IntersectionObserver((entries) => {
-				entries.forEach(entry => {
-					if (entry.isIntersecting) {
-						const el = entry.target;
-						const delay = el.dataset.delay || '0';
-						el.classList.add('revealed', 'delay-' + delay);
-						revealObserver.unobserve(el);
-					}
-				});
-			}, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
-			document.querySelectorAll('[data-reveal]').forEach(el => revealObserver.observe(el));
-
-			// After 4s, if anything is still hidden (e.g. WebGPU failed silently), force reveal
-			setTimeout(() => {
-				document.querySelectorAll('[data-reveal]:not(.revealed)').forEach(el => {
-					const delay = el.dataset.delay || '0';
-					el.classList.add('revealed', 'delay-' + delay);
-				});
-			}, 4000);
-
-			// Also reveal everything on visibility (back from another tab) as a safety net
-			window.addEventListener('error', (e) => {
-				console.warn('[fallback] Script error caught, revealing all content', e.message);
-				document.querySelectorAll('[data-reveal]:not(.revealed)').forEach(el => {
-					const delay = el.dataset.delay || '0';
-					el.classList.add('revealed', 'delay-' + delay);
-				});
-			});
-		})();
-	</script>
-
 	<script type="module">
 		import * as THREE from 'three/webgpu';
 		import {
@@ -1579,10 +1544,9 @@
 		scene.background = buildSkyTexture();
 		scene.fog = new THREE.FogExp2('#000000', 0.035);
 
-		// Wider FOV on mobile (portrait) so grass appears smaller and content has more room.
-		// 45° is the sweet spot — wider than 38° (more sky for content) but not so wide
-		// that the camera sees past the grass field edge.
-		const camera = new THREE.PerspectiveCamera(window.innerWidth < 768 ? 45 : 38, innerWidth / innerHeight, 0.1, 100);
+		// Same FOV on mobile and desktop (38°) to keep the grass field edge hidden
+		// outside the viewport. Wider FOVs reveal the hard edge of the finite field.
+		const camera = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, 0.1, 100);
 		camera.position.set(0, 8, 18);
 		camera.lookAt(0, 0, 0);
 
@@ -1881,7 +1845,7 @@
 			clearTimeout(resizeTimeout);
 			resizeTimeout = setTimeout(() => {
 				camera.aspect = innerWidth / innerHeight;
-				camera.fov = window.innerWidth < 768 ? 45 : 38;
+				camera.fov = 38;
 				camera.updateProjectionMatrix();
 				const dpr = window.innerWidth < 1200 ? 1.5 : Math.min(devicePixelRatio, 2);
 				renderer.setPixelRatio(dpr);
