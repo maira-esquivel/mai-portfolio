@@ -32,6 +32,20 @@
 			z-index: 0;
 		}
 
+		/* Mobile/tablet: hide the WebGPU canvas — Three.js scene is desktop-only.
+		   Replaced by a subtle violet glow background so the hero still feels alive. */
+		@media (max-width: 1023px) {
+			canvas { display: none !important; }
+			body {
+				background:
+					radial-gradient(ellipse 130% 55% at 50% 100%,
+						rgba(98, 0, 238, 0.22) 0%,
+						rgba(55, 0, 179, 0.10) 35%,
+						rgba(0, 0, 0, 0) 70%),
+					#000;
+			}
+		}
+
 
 		#scroll-container {
 			position: relative;
@@ -505,6 +519,36 @@
 			background: linear-gradient(180deg, rgba(15, 8, 30, 0.18) 0%, transparent 35%, transparent 60%, rgba(15, 8, 30, 0.55) 100%);
 			pointer-events: none;
 			z-index: 1;
+		}
+
+		/* Coming-soon disabled state */
+		.portfolio-card.coming-soon {
+			cursor: not-allowed;
+			pointer-events: none;
+		}
+		.portfolio-card.coming-soon .portfolio-thumb::before {
+			filter: saturate(0.4) brightness(0.55);
+		}
+		.portfolio-card.coming-soon .portfolio-meta h3,
+		.portfolio-card.coming-soon .portfolio-meta p,
+		.portfolio-card.coming-soon .portfolio-meta .portfolio-year {
+			opacity: 0.55;
+		}
+		.coming-soon-badge {
+			position: absolute;
+			top: 14px;
+			right: 14px;
+			z-index: 3;
+			font-family: 'Inter', sans-serif;
+			font-size: 9px;
+			font-weight: 600;
+			letter-spacing: 2.5px;
+			text-transform: uppercase;
+			color: #1a0040;
+			background: linear-gradient(135deg, #BB86FC, #E0B4FF);
+			padding: 7px 12px;
+			border-radius: 999px;
+			box-shadow: 0 4px 14px rgba(187, 134, 252, 0.35);
 		}
 
 		.portfolio-thumb-tag {
@@ -1411,7 +1455,8 @@
 						<span class="portfolio-year">2024 · Foundations</span>
 					</div>
 				</a>
-				<a href="javascript:void(0)" class="portfolio-card" data-reveal data-delay="1" style="--thumb:url('portfolio-img/dialpad-brand.webp');">
+				<a href="javascript:void(0)" class="portfolio-card coming-soon" aria-disabled="true" data-reveal data-delay="1" style="--thumb:url('portfolio-img/dialpad-brand.webp');">
+					<span class="coming-soon-badge">Coming Soon</span>
 					<div class="portfolio-thumb">
 						<span class="portfolio-thumb-tag">Branding</span>
 					</div>
@@ -1421,7 +1466,8 @@
 						<span class="portfolio-year">2024 · Brand Site</span>
 					</div>
 				</a>
-				<a href="javascript:void(0)" class="portfolio-card" data-reveal data-delay="2" style="--thumb:url('portfolio-img/dialpad-admin.webp');">
+				<a href="javascript:void(0)" class="portfolio-card coming-soon" aria-disabled="true" data-reveal data-delay="2" style="--thumb:url('portfolio-img/dialpad-admin.webp');">
+					<span class="coming-soon-badge">Coming Soon</span>
 					<div class="portfolio-thumb">
 						<span class="portfolio-thumb-tag">UI / UX</span>
 					</div>
@@ -1431,7 +1477,8 @@
 						<span class="portfolio-year">2024 · Product Design</span>
 					</div>
 				</a>
-				<a href="javascript:void(0)" class="portfolio-card" data-reveal data-delay="3" style="--thumb:url('portfolio-img/payoneer-search.webp');">
+				<a href="javascript:void(0)" class="portfolio-card coming-soon" aria-disabled="true" data-reveal data-delay="3" style="--thumb:url('portfolio-img/payoneer-search.webp');">
+					<span class="coming-soon-badge">Coming Soon</span>
 					<div class="portfolio-thumb">
 						<span class="portfolio-thumb-tag">Generative AI</span>
 					</div>
@@ -1501,11 +1548,30 @@
 		</div>
 	</footer>
 
-	<!-- Slow-load safety net: if Three.js (WebGPU) takes >1.4s to set up the
-	     reveal observer (or fails entirely), reveal hero content so the user
-	     never stares at black. Fast loads trigger the in-script observer first
-	     and this never fires visibly. -->
+	<!-- Reveal observer + safety net.
+	     - Mobile/tablet (<1024px): set up an immediate IntersectionObserver since
+	       Three.js is skipped entirely on these viewports.
+	     - Desktop: keep a 1.4s safety-net fallback in case Three.js stalls. The
+	       in-script observer normally fires first and this never runs visibly. -->
 	<script>
+		const _isDesktop = window.innerWidth >= 1024;
+		if (!_isDesktop) {
+			// Set up the reveal observer immediately on mobile/tablet
+			const obs = new IntersectionObserver((entries) => {
+				entries.forEach(entry => {
+					if (entry.isIntersecting) {
+						const el = entry.target;
+						const delay = el.dataset.delay || '0';
+						el.classList.add('revealed', 'delay-' + delay);
+						obs.unobserve(el);
+					}
+				});
+			}, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
+			document.addEventListener('DOMContentLoaded', () => {
+				document.querySelectorAll('[data-reveal]').forEach(el => obs.observe(el));
+			});
+		}
+		// Desktop safety net
 		setTimeout(() => {
 			document.querySelectorAll('[data-reveal]:not(.revealed)').forEach(el => {
 				const delay = el.dataset.delay || '0';
@@ -1529,6 +1595,14 @@
 			pass, mrt, output, transformedNormalView,
 		} from 'three/tsl';
 		import { dof } from 'three/addons/tsl/display/DepthOfFieldNode.js';
+
+		// Skip the entire WebGPU scene on mobile/tablet — only desktop gets the grass.
+		// (Imports above are hoisted but the modules are heavily cached by the browser
+		// and won't execute any rendering until we touch them below.)
+		if (window.innerWidth < 1024) {
+			console.info('[scene] skipping WebGPU init on mobile/tablet viewport');
+			throw new Error('SKIP_THREE_MOBILE');
+		}
 
 		const BLADE_COUNT = window.innerWidth < 768 ? 40000 : 120000;
 		const FIELD_SIZE = 30;

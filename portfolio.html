@@ -406,6 +406,36 @@
 			text-decoration: none;
 		}
 
+		/* Coming-soon disabled state */
+		.portfolio-card.coming-soon {
+			cursor: not-allowed;
+			pointer-events: none;
+		}
+		.portfolio-card.coming-soon .portfolio-thumb::before {
+			filter: saturate(0.4) brightness(0.55);
+		}
+		.portfolio-card.coming-soon .portfolio-meta h3,
+		.portfolio-card.coming-soon .portfolio-meta p,
+		.portfolio-card.coming-soon .portfolio-meta .portfolio-year {
+			opacity: 0.55;
+		}
+		.coming-soon-badge {
+			position: absolute;
+			top: 14px;
+			right: 14px;
+			z-index: 3;
+			font-family: 'Inter', sans-serif;
+			font-size: 9px;
+			font-weight: 600;
+			letter-spacing: 2.5px;
+			text-transform: uppercase;
+			color: #1a0040;
+			background: linear-gradient(135deg, #BB86FC, #E0B4FF);
+			padding: 7px 12px;
+			border-radius: 999px;
+			box-shadow: 0 4px 14px rgba(187, 134, 252, 0.35);
+		}
+
 		/* ── Footer ── */
 		.site-footer {
 			position: relative;
@@ -560,7 +590,8 @@
 					</div>
 				</a>
 
-				<a href="javascript:void(0)" class="portfolio-card" data-category="branding" data-reveal data-delay="1" style="--thumb:url('portfolio-img/dialpad-brand.webp');">
+				<a href="javascript:void(0)" class="portfolio-card coming-soon" aria-disabled="true" data-category="branding" data-reveal data-delay="1" style="--thumb:url('portfolio-img/dialpad-brand.webp');">
+					<span class="coming-soon-badge">Coming Soon</span>
 					<div class="portfolio-thumb">
 						<span class="portfolio-thumb-tag">Branding</span>
 					</div>
@@ -571,7 +602,8 @@
 					</div>
 				</a>
 
-				<a href="javascript:void(0)" class="portfolio-card" data-category="product" data-reveal data-delay="2" style="--thumb:url('portfolio-img/dialpad-admin.webp');">
+				<a href="javascript:void(0)" class="portfolio-card coming-soon" aria-disabled="true" data-category="product" data-reveal data-delay="2" style="--thumb:url('portfolio-img/dialpad-admin.webp');">
+					<span class="coming-soon-badge">Coming Soon</span>
 					<div class="portfolio-thumb">
 						<span class="portfolio-thumb-tag">UI / UX</span>
 					</div>
@@ -582,7 +614,8 @@
 					</div>
 				</a>
 
-				<a href="javascript:void(0)" class="portfolio-card" data-category="ai product" data-reveal data-delay="3" style="--thumb:url('portfolio-img/payoneer-search.webp');">
+				<a href="javascript:void(0)" class="portfolio-card coming-soon" aria-disabled="true" data-category="ai product" data-reveal data-delay="3" style="--thumb:url('portfolio-img/payoneer-search.webp');">
+					<span class="coming-soon-badge">Coming Soon</span>
 					<div class="portfolio-thumb">
 						<span class="portfolio-thumb-tag">Generative AI</span>
 					</div>
