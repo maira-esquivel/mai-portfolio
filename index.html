@@ -1410,19 +1410,20 @@
 			grid-area: stack;
 			opacity: 0;
 			transform: translateY(4px);
-			animation: heroTagRotate 9s cubic-bezier(0.5, 0, 0.2, 1) infinite;
+			animation: heroTagRotate 12s cubic-bezier(0.5, 0, 0.2, 1) infinite;
 			white-space: nowrap;
 		}
 
 		.hero-tag-item:nth-child(1) { animation-delay: 0s; }
 		.hero-tag-item:nth-child(2) { animation-delay: 3s; }
 		.hero-tag-item:nth-child(3) { animation-delay: 6s; }
+		.hero-tag-item:nth-child(4) { animation-delay: 9s; }
 
 		@keyframes heroTagRotate {
 			0%   { opacity: 0; transform: translateY(4px); }
-			6%   { opacity: 1; transform: translateY(0); }
-			28%  { opacity: 1; transform: translateY(0); }
-			34%  { opacity: 0; transform: translateY(-4px); }
+			4%   { opacity: 1; transform: translateY(0); }
+			21%  { opacity: 1; transform: translateY(0); }
+			25%  { opacity: 0; transform: translateY(-4px); }
 			100% { opacity: 0; transform: translateY(-4px); }
 		}
 
@@ -1473,7 +1474,8 @@
 				<span class="hero-tag-rotator" aria-live="polite">
 					<span class="hero-tag-item">Product Designer UX/UI</span>
 					<span class="hero-tag-item">Generative UI Designer</span>
-					<span class="hero-tag-item">Design Systems for AI</span>
+					<span class="hero-tag-item">Design System Expert</span>
+					<span class="hero-tag-item">Visual Designer</span>
 				</span>
 			</span>
 			<h1 data-reveal data-delay="2">Mai<br><em>Esquivel</em></h1>
